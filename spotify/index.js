@@ -4,7 +4,7 @@ const express = require('express');
 const SpotifyClient = require('./client');
 const passport = require('passport');
 const app = express();
-const logger = require('./logger');
+// const logger = require('./logger');
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -29,19 +29,19 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/fail', (req, res) => {
-  logger.error('Something failed');
-  logger.error('%o', res);
+  console.error('Something failed');
+  console.error('%o', res);
   res.send('Stuff failed');
 });
 app.get('/pass', (req, res) => {
-  logger.debug('Something passed');
-  logger.debug('%o', res);
+  console.log('Something passed');
+  console.log('%o', res);
   res.send('Stuff passed!');
 });
 app.use('/api', SpotifyClient.router);
 
 app.listen(3000);
-logger.debug(`Listening on port ${3000}...`);
+console.log(`Listening on port ${3000}...`);
 
 
 module.exports.run = (req, res) => {
@@ -49,7 +49,7 @@ module.exports.run = (req, res) => {
       req.url = '/';
       req.path = '/';
     }
-    logger.debug('Received request');
-    logger.debug(req);
+    console.log('Received request');
+    console.log(req);
     return app(req, res);
 };

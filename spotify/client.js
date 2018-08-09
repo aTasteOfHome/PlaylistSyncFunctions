@@ -3,16 +3,16 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const router = require('express').Router();
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
-const logger = require('./logger');
+// const logger = require('./logger');
 
 const spotifyClient = new class SpotifyClient {
     constructor() {
         router.get('/auth', passport.authenticate('spotify'), (req, res) => {
-            logger.debug('First step to authenticating spotify');
-            logger.debug('Request:');
-            logger.debug(req);
-            logger.debug('Response:');
-            logger.debug(res);
+            console.log('First step to authenticating spotify');
+            console.log('Request:');
+            console.log(req);
+            console.log('Response:');
+            console.log(res);
         });
         router.get('/authCb', passport.authenticate('spotify', { failureRedirect: '/fail'}), 
         (req, res) => {
@@ -32,7 +32,7 @@ const spotifyClient = new class SpotifyClient {
             clientSecret: process.env.CLIENT_SECRET,
             redirectUri: process.env.REDIRECT_URI
         });
-        logger.debug('Spotify auth completed successfully!');
+        console.log('Spotify auth completed successfully!');
         this.api.setAccessToken(accessToken);
     }
 }();
