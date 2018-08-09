@@ -3,7 +3,7 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const router = require('express').Router();
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
-const logger = require('../logger');
+const logger = require('./logger');
 
 const spotifyClient = new class SpotifyClient {
     constructor() {
