@@ -4,8 +4,7 @@ const express = require('express');
 const SpotifyClient = require('./client');
 const passport = require('passport');
 const app = express();
-const logger = require('../logger');
-const config = require('../config');
+const logger = require('./logger');
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -41,10 +40,14 @@ app.get('/pass', (req, res) => {
 });
 app.use('/api', SpotifyClient.router);
 
-app.listen(config.port);
-logger.debug(`Listening on port ${config.port}...`);
+app.listen(3000);
+logger.debug(`Listening on port ${3000}...`);
 
 
 module.exports.run = (req, res) => {
-    res.redirect('/api');
+    if (!req.url) {
+      req.url = '/';
+      req.path = '/';
+    }
+    return app(req, res);
 };
