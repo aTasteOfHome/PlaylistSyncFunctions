@@ -1,0 +1,11 @@
+mkdir PlaylistSyncFunctions;
+cd PlaylistSyncFunctions;
+git init;
+git remote add -f origin https://github.com/aTasteOfHome/PlaylistSyncFunctions.git;
+git config core.sparseCheckout true;
+echo \"config\" >> .git/info/sparse-checkout;
+echo \"logger\" >> .git/info/sparse-checkout;
+git pull --depth=1 origin master;
+cd ..;
+npm i ./PlaylistSyncFunctions/config/
+npm i ./PlaylistSyncFunctions/logger/
