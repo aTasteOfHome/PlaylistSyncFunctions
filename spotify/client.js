@@ -7,7 +7,13 @@ const logger = require('./logger');
 
 const spotifyClient = new class SpotifyClient {
     constructor() {
-        router.get('/auth', passport.authenticate('spotify'), (req, res) => {});
+        router.get('/auth', passport.authenticate('spotify'), (req, res) => {
+            logger.debug('First step to authenticating spotify');
+            logger.debug('Request:');
+            logger.debug(req);
+            logger.debug('Response:');
+            logger.debug(res);
+        });
         router.get('/authCb', passport.authenticate('spotify', { failureRedirect: '/fail'}), 
         (req, res) => {
             res.redirect('/pass');

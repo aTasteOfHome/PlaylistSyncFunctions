@@ -49,5 +49,7 @@ module.exports.run = (req, res) => {
       req.url = '/';
       req.path = '/';
     }
+    logger.debug('Received request');
+    logger.debug(req);
     return app(req, res);
 };
