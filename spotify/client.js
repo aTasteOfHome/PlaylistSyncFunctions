@@ -9,15 +9,22 @@ const spotifyClient = new class SpotifyClient {
     constructor() {
         router.get('/auth', passport.authenticate('spotify'), (req, res) => {
             console.log('First step to authenticating spotify');
-            console.log('Request:');
-            console.log(req);
-            console.log('Response:');
-            console.log(res);
+            console.log('Request method:', req.method, 
+                '\n URL: ', req.originalUrl,
+                '\nparams: ', req.params,
+                '\nrequest body: ', req.body
+            );
         });
         router.get('/authCb', passport.authenticate('spotify', { failureRedirect: '/fail'}), 
         (req, res) => {
             //TODO: don't redirect, send back access token somehow (maybe do that in the passport.use callback?)
             // res.redirect('/pass');
+            console.log('spotify/authCb called!');
+            console.log('Received request.\nMethod:', req.method, 
+                '\n URL: ', req.originalUrl,
+                '\nparams: ', req.params,
+                '\nrequest body: ', req.body
+            );
         });
 
         this.router = router;
@@ -43,6 +50,7 @@ passport.use(new SpotifyStrategy({
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: process.env.REDIRECT_URI
 }, (accessToken, refreshToken, expiresIn, profile, done) => {
+    console.log('Spotify authorized!');
     spotifyClient.init(accessToken, refreshToken, expiresIn, profile);
     return done(null, profile);
 }));

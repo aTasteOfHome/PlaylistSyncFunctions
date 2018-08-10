@@ -48,10 +48,11 @@ module.exports.run = (req, res) => {
   if (!req.path) {
     req.url = `/${req.url}`; // prepend '/' to keep query params if any
   }
-    console.log('Received request');
-    console.log(req.method);
-    console.log(req.originalUrl);
-    console.log(req.params);
-    console.log(req.body);
+    
+    console.log('Received request.\nMethod:', req.method, 
+        '\n URL: ', req.originalUrl,
+        '\nparams: ', req.params,
+        '\nrequest body: ', req.body
+    );
     return app(req, res);
 };
