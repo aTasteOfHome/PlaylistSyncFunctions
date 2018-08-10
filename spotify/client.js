@@ -16,7 +16,8 @@ const spotifyClient = new class SpotifyClient {
         });
         router.get('/authCb', passport.authenticate('spotify', { failureRedirect: '/fail'}), 
         (req, res) => {
-            res.redirect('/pass');
+            //TODO: don't redirect, send back access token somehow (maybe do that in the passport.use callback?)
+            // res.redirect('/pass');
         });
 
         this.router = router;
