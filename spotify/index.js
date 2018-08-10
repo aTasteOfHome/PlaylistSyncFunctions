@@ -45,11 +45,13 @@ console.log(`Listening on port ${3000}...`);
 
 
 module.exports.run = (req, res) => {
-    if (!req.url) {
-      req.url = '/';
-      req.path = '/';
-    }
+  if (!req.path) {
+    req.url = `/${req.url}`; // prepend '/' to keep query params if any
+  }
     console.log('Received request');
-    console.log(req);
+    console.log(req.method);
+    console.log(req.originalUrl);
+    console.log(req.params);
+    console.log(req.body);
     return app(req, res);
 };
