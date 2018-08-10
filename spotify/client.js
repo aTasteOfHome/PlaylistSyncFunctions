@@ -25,6 +25,9 @@ const spotifyClient = new class SpotifyClient {
                 '\nparams: ', req.params,
                 '\nrequest body: ', req.body
             );
+            let accessCode = req.baseUrl.split('code=')[1].split('&')[0];
+            console.log('access code: ', accessCode);
+            //code is in the url; parse it out, then hit spotify's servers to get the accesstoken
         });
 
         this.router = router;
@@ -51,6 +54,8 @@ passport.use(new SpotifyStrategy({
     callbackURL: process.env.REDIRECT_URI
 }, (accessToken, refreshToken, expiresIn, profile, done) => {
     console.log('Spotify authorized!');
+    console.log('blay ', accessToken);
+    //TODO: save accessToken to cloud datastore
     spotifyClient.init(accessToken, refreshToken, expiresIn, profile);
     return done(null, profile);
 }));
