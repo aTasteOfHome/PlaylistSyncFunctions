@@ -3,6 +3,7 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const router = require('express').Router();
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
+const Datastore = require('@google-cloud/datastore');
 // const logger = require('./logger');
 
 const spotifyClient = new class SpotifyClient {
@@ -29,6 +30,7 @@ const spotifyClient = new class SpotifyClient {
         });
 
         this.router = router;
+        this.datastore = new Datastore();
     }
 
     init(accessToken, refreshToken, expiresIn, profile) {
@@ -42,7 +44,31 @@ const spotifyClient = new class SpotifyClient {
             redirectUri: process.env.REDIRECT_URI
         });
         console.log('Spotify auth completed successfully!');
+        this.setAuthInfo(accessToken, refreshToken, expiresIn);
+    }
+    setAuthInfo(accessToken, refreshToken, expiresIn) {
         this.api.setAccessToken(accessToken);
+        const kind = 'account-auth';
+        const name = 'spotify';
+        const key = spotifyClient.datastore.key([kind, name]);
+        const dataToSave = {
+            key,
+            data: {
+                accessToken,
+                refreshToken,
+                expiresIn
+            }
+        };
+        console.log('Data to save: %j', dataToSave);
+        this.datastore
+            .save(dataToSave)
+            .then(() => {
+                console.log('Saved %j: %j', dataToSave.key, dataToSave.data);
+            })
+            .catch(err => {
+                console.error('Failed to save auth info in Spotify');
+                console.error(err);
+            });
     }
 }();
 
@@ -52,7 +78,6 @@ passport.use(new SpotifyStrategy({
     callbackURL: process.env.REDIRECT_URI
 }, (accessToken, refreshToken, expiresIn, profile, done) => {
     console.log('Spotify authorized!');
-    console.log('blay ', accessToken);
     //TODO: save accessToken to cloud datastore
     spotifyClient.init(accessToken, refreshToken, expiresIn, profile);
     return done(null, profile);
