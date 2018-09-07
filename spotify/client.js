@@ -3,18 +3,43 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const router = require('express').Router();
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
-const Datastore = require('@google-cloud/datastore');
+const db = require('./db');
 // const logger = require('./logger');
 
 const spotifyClient = new class SpotifyClient {
     constructor() {
-        router.get('/auth', passport.authenticate('spotify'), (req, res) => {
+        const kind = 'account-auth';
+        const name = 'spotify';
+        this.authInfoKey = db.key([kind, name]);
+
+        router.get('/auth', (req, res) => {
             console.log('First step to authenticating spotify');
+            //check that we're already logged in somehow, and abort auth if so
             console.log('Request method:', req.method, 
                 '\n URL: ', req.originalUrl,
                 '\nparams: ', req.params,
                 '\nrequest body: ', req.body
             );
+            db.get(this.authInfoKey, (err, entity) => {
+                if (err) {
+                    console.error(err);
+                    //TODO: figure out how to change response status so it is an error
+                    res.send(err);
+                }
+                //TODO: check the tokens and expires in
+                console.log(entity);
+                res.redirect('/authLogin');
+            });
+        });
+        router.get('/authLogin', passport.authenticate('spotify'), (req, res) => {
+            console.log('First step to authenticating spotify');
+            //check that we're already logged in somehow, and abort auth if so
+            console.log('Request method:', req.method, 
+                '\n URL: ', req.originalUrl,
+                '\nparams: ', req.params,
+                '\nrequest body: ', req.body
+            );
+            res.send('login good!');
         });
         router.get('/authCb', passport.authenticate('spotify', { failureRedirect: '/fail'}), 
         (req, res) => {
@@ -27,10 +52,10 @@ const spotifyClient = new class SpotifyClient {
                 '\nrequest body: ', req.body
             );
             //code is in the url; parse it out, then hit spotify's servers to get the accesstoken
+            res.send('login cb good!');
         });
 
         this.router = router;
-        this.datastore = new Datastore();
     }
 
     init(accessToken, refreshToken, expiresIn, profile) {
@@ -50,7 +75,7 @@ const spotifyClient = new class SpotifyClient {
         this.api.setAccessToken(accessToken);
         const kind = 'account-auth';
         const name = 'spotify';
-        const key = spotifyClient.datastore.key([kind, name]);
+        const key = db.key([kind, name]);
         const dataToSave = {
             key,
             data: {
@@ -60,8 +85,7 @@ const spotifyClient = new class SpotifyClient {
             }
         };
         console.log('Data to save: %j', dataToSave);
-        this.datastore
-            .save(dataToSave)
+        db.save(dataToSave)
             .then(() => {
                 console.log('Saved %j: %j', dataToSave.key, dataToSave.data);
             })
