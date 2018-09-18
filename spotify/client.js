@@ -3,7 +3,7 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const router = require('express').Router();
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
-const db = require('./db');
+const { db } = require('./db');
 // const logger = require('./logger');
 
 const spotifyClient = new class SpotifyClient {
@@ -12,19 +12,19 @@ const spotifyClient = new class SpotifyClient {
         const name = 'spotify';
         this.authInfoKey = db.key([kind, name]);
 
-        router.get('/auth', (req, res) => {
-            console.log('First step to authenticating spotify');
-            //check that we're already logged in somehow, and abort auth if so
+        router.get('/auth', (req, res, next) => {
+            console.log('First step to authenticating spotify; check if we\'re already logged in');
             console.log('Request method:', req.method, 
                 '\n URL: ', req.originalUrl,
                 '\nparams: ', req.params,
                 '\nrequest body: ', req.body
             );
+            //TODO: check that we're already logged in somehow, and abort auth if so
             db.get(this.authInfoKey, (err, entity) => {
                 if (err) {
                     console.error(err);
-                    //TODO: figure out how to change response status so it is an error
-                    res.send(err);
+                    next(err);
+                    return;
                 }
                 //TODO: check the tokens and expires in
                 console.log(entity);
@@ -32,8 +32,7 @@ const spotifyClient = new class SpotifyClient {
             });
         });
         router.get('/authLogin', passport.authenticate('spotify'), (req, res) => {
-            console.log('First step to authenticating spotify');
-            //check that we're already logged in somehow, and abort auth if so
+            console.log('Second step to authenticating spotify (Actually do the passport stuff)');
             console.log('Request method:', req.method, 
                 '\n URL: ', req.originalUrl,
                 '\nparams: ', req.params,
