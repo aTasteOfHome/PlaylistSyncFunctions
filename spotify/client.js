@@ -27,18 +27,29 @@ const spotifyClient = new class SpotifyClient {
                     return;
                 }
                 //TODO: check the tokens and expires in
+                //data structure:
+                /*
+                { 
+                    refreshToken: 'some_token', 
+                    accessToken: 'some_token', 
+                    expiresIn: 3600, 
+                    [Symbol(KEY)]: Key { 
+                        namespace: undefined, 
+                        name: 'spotify', 
+                        kind: 'account-auth', 
+                        path: [Getter] 
+                    } 
+                }
+                */
                 console.log(entity);
                 res.redirect('/authLogin');
             });
         });
         router.get('/authLogin', passport.authenticate('spotify'), (req, res) => {
-            console.log('Second step to authenticating spotify (Actually do the passport stuff)');
-            console.log('Request method:', req.method, 
-                '\n URL: ', req.originalUrl,
-                '\nparams: ', req.params,
-                '\nrequest body: ', req.body
-            );
-            res.send('login good!');
+            /*
+                The request will be redirected to spotify for authentication, so this
+                function will not be called.
+            */
         });
         router.get('/authCb', passport.authenticate('spotify', { failureRedirect: '/fail'}), 
         (req, res) => {
@@ -92,6 +103,13 @@ const spotifyClient = new class SpotifyClient {
                 console.error('Failed to save auth info in Spotify');
                 console.error(err);
             });
+    }
+
+    ensureAuthenticated(req, res, next) {
+        if (req.isAuthenticated()) return next();
+
+        console.warn('Request was not authenticated');
+        res.redirect('/fail');
     }
 }();
 

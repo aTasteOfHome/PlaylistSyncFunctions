@@ -18,6 +18,7 @@
     "passport-spotify": "^1.0.1",
     "serve-static": "^1.13.2",
     "spotify-web-api-node": "^3.1.1",
+    "superagent": "github:visionmedia/superagent",
     "winston": "^3.0.0"
   }
 }
