@@ -48,6 +48,8 @@ const spotifyClient = new class SpotifyClient {
                     res.send('OK');
                     return;
                 } else {
+                    //TODO: add security around datastore because of indefinite refresh tokens
+                    //TODO: add get requests for profile info to test auth tokens
                     request.post('https://accounts.spotify.com/api/token')
                         .on('response', response => {
                             console.log('Got refresh token response from spotify!');
