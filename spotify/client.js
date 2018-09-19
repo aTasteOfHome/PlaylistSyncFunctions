@@ -1,6 +1,7 @@
 'use strict';
 const SpotifyWebApi = require('spotify-web-api-node');
 const router = require('express').Router();
+const request = require('request');
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
 const { db } = require('./db');
@@ -22,8 +23,8 @@ const spotifyClient = new class SpotifyClient {
             //TODO: check that we're already logged in somehow, and abort auth if so
             db.get(this.authInfoKey, (err, entity) => {
                 if (err) {
-                    console.error(err);
-                    next(err);
+                    console.warn('Could not find authInfo; First time logging into Spotify');
+                    res.redirect('/authLogin');
                     return;
                 }
                 //TODO: check the tokens and expires in
@@ -41,8 +42,25 @@ const spotifyClient = new class SpotifyClient {
                     } 
                 }
                 */
-                console.log(entity);
-                res.redirect('/authLogin');
+               console.log(entity);
+                if (entity.expiresAt < new Date().getTime()) {
+                    console.log('auth token is still valid');
+                    res.send('OK');
+                    return;
+                } else {
+                    request.post('https://accounts.spotify.com/api/token')
+                        .on('response', response => {
+                            console.log('Got refresh token response from spotify!');
+                            console.log(response);
+                            let {access_token, token_type, scope, expires_in} = response;
+                            spotifyClient.init(access_token, spotifyClient.refreshToken, expires_in);
+                        })
+                        .on('error', err => {
+                            console.error(err);
+                            res.redirect('fail');
+                        });
+                    return;
+                }
             });
         });
         router.get('/authLogin', passport.authenticate('spotify'), (req, res) => {
@@ -68,20 +86,21 @@ const spotifyClient = new class SpotifyClient {
         this.router = router;
     }
 
-    init(accessToken, refreshToken, expiresIn, profile) {
+    init(accessToken, refreshToken, expiresIn , profile) {
         this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-        this.expiresIn = expiresIn;
-        this.profile = profile;
+        this.refreshToken = refreshToken || this.refreshToken;
+        this.expiresIn = expiresIn || this.expiresIn;
+        this.expiresAt = new Date().getTime() + expiresIn * 1000;
+        this.profile = profile || this.profile;
         this.api = new SpotifyWebApi({
             clientId: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
             redirectUri: process.env.REDIRECT_URI
         });
         console.log('Spotify auth completed successfully!');
-        this.setAuthInfo(accessToken, refreshToken, expiresIn);
+        this.setAuthInfo(accessToken, refreshToken, this.expiresAt);
     }
-    setAuthInfo(accessToken, refreshToken, expiresIn) {
+    setAuthInfo(accessToken, refreshToken, expiresAt) {
         this.api.setAccessToken(accessToken);
         const kind = 'account-auth';
         const name = 'spotify';
@@ -91,7 +110,7 @@ const spotifyClient = new class SpotifyClient {
             data: {
                 accessToken,
                 refreshToken,
-                expiresIn
+                expiresAt
             }
         };
         console.log('Data to save: %j', dataToSave);
