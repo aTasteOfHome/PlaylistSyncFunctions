@@ -49,6 +49,8 @@ const spotifyClient = new class SpotifyClient {
                     return;
                 } else {
                     //TODO: add security around datastore because of indefinite refresh tokens
+                    //TODO: add security and OAuth, etc. around cloud function to prevent random people from pinging it and getting my refresh tokens
+                    //TODO: delete old project and make new one to generate new URLs
                     //TODO: add get requests for profile info to test auth tokens
                     request.post('https://accounts.spotify.com/api/token')
                         .on('response', response => {
