@@ -21,6 +21,7 @@ import logging
 #     # Enable incremental authorization. Recommended as a best practice.
 #     include_granted_scopes='true')
 
+#TODO: use pipenv for everything
 def main():
-    logging.info('Hello world')
+    logging.error('Hello world')
     return
