@@ -1,3 +1,4 @@
+import logging
 # import google.oauth2.credentials
 # import google_auth_oauthlib.flow
 
@@ -21,5 +22,5 @@
 #     include_granted_scopes='true')
 
 def main():
-    print('hello world')
+    logging.info('Hello world')
     return
