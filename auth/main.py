@@ -1,4 +1,5 @@
 import logging
+import sys
 # import google.oauth2.credentials
 # import google_auth_oauthlib.flow
 
@@ -23,5 +24,5 @@ import logging
 
 #TODO: use pipenv for everything
 def main():
-    logging.error('Hello world')
+    sys.stderr.write('I failed you (sys.stderr.write)\n')
     return
