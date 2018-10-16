@@ -24,5 +24,5 @@ import sys
 
 #TODO: use pipenv for everything
 def main():
-    sys.stderr.write('I failed you (sys.stderr.write)\n')
+    raise Exception('Log you moss-brained bastard server you')
     return
