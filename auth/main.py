@@ -21,5 +21,5 @@
 #     include_granted_scopes='true')
 
 def main():
-    print 'hello world'
+    print('hello world')
     return
