@@ -41,7 +41,7 @@ def main(*args):
     
     with open('./client_info.json') as client_info:
         web = client_info.get('web')
-        if web is None
+        if web is None:
             logging.error('Failed to parse client info')
             logging.debug(client_info)
             return
