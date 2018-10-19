@@ -35,9 +35,9 @@ def main(*args):
 
     # Use the client_secret.json file to identify the application requesting
     # authorization. The client ID (from that file) and access scopes are required.
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        'client_secret.json',
-        scope=['https://www.googleapis.com/auth/drive.metadata.readonly'])
+    # flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+    #     'client_secret.json',
+    #     scope=['https://www.googleapis.com/auth/drive.metadata.readonly'])
     
     with open('./client_info.json') as client_info:
         web = client_info.get('web')
