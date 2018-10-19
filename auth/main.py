@@ -1,7 +1,9 @@
 import logging
-import sys
-# import google.oauth2.credentials
-# import google_auth_oauthlib.flow
+import google.oauth2.credentials
+import google_auth_oauthlib.flow
+from flask import Flask
+# app = Flask(__name__)
+
 
 # # Use the client_secret.json file to identify the application requesting
 # # authorization. The client ID (from that file) and access scopes are required.
@@ -23,6 +25,11 @@ import sys
 #     include_granted_scopes='true')
 
 #TODO: use pipenv for everything
-def main():
-    raise Exception('Log you moss-brained bastard server you')
+def main(*args):
+    for arg in args:
+        print(arg)
+        print(type(arg))
+        print(type(arg).__name__)
+        print(type(arg).__class__.__name__)
+        print('\n')
     return
