@@ -39,7 +39,8 @@ def main(*args):
     #     'client_secret.json',
     #     scope=['https://www.googleapis.com/auth/drive.metadata.readonly'])
     
-    with open('./client_info.json') as client_info:
+    with open('./client_info.json') as client_info_input:
+        client_info = client_info_input.readLines()
         web = client_info['web']
         if web is None:
             logging.error('Failed to parse client info')
