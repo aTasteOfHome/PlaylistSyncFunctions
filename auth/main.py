@@ -41,8 +41,12 @@ def main(*args):
     
     with open('./client_info.json', "r") as client_info_input:
         client_info = client_info_input.readlines()
+        print('print the lines')
+        for line in client_info:
+            print(line)
+        print('\nprint the file')
         for line in client_info_input:
-            print(client_info_input)
+            print(line)
         web = client_info['web']
         if web is None:
             logging.error('Failed to parse client info')
