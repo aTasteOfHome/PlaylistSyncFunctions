@@ -50,14 +50,13 @@ def main(*args):
         web['client_id'] = environ['CLIENT_ID']
         web['client_secret'] = environ['CLIENT_SECRET']
         web['project_id'] = environ['PROJECT_ID']
-        web['redirect-uris'].append(environ['REDIRECT_URI'])
         flow = google_auth_oauthlib.flow.Flow.from_client_config(
             client_info,
-            scope=['https://www.googleapis.com/auth/drive.metadata.readonly'])
+            scope=['openid'])
 
         # Indicate where the API server will redirect the user after the user completes
         # the authorization flow. The redirect URI is required.
-        flow.redirect_uri = 'https://www.example.com/oauth2callback'
+        flow.redirect_uri = environ['REDIRECT_URI']
 
         # Generate URL for request to Google's OAuth 2.0 server.
         # Use kwargs to set optional request parameters.
