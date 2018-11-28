@@ -52,7 +52,7 @@ def main(*args):
         web['project_id'] = environ['PROJECT_ID']
         flow = google_auth_oauthlib.flow.Flow.from_client_config(
             client_info,
-            scope=['openid'])
+            scopes=['openid'])
 
         # Indicate where the API server will redirect the user after the user completes
         # the authorization flow. The redirect URI is required.
