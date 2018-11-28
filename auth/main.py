@@ -41,6 +41,7 @@ def main(*args):
     
     with open('./client_info.json', "r") as f:
         client_info = json.load(f)
+        print(json.dumps(client_info))
         web = client_info['web']
         if web is None:
             logging.error('Failed to parse client info')
