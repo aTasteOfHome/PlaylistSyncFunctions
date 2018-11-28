@@ -1,6 +1,7 @@
 import logging
 import json
 from os import environ
+import flask
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 
@@ -68,5 +69,6 @@ def main(*args):
             include_granted_scopes='true')
         print(authorization_url)
         print(state)
-        return
+        return flask.redirect(authorization_url)
+        # Google does the sign in stuff, now set up the response processing in the redirect uri (/auth/cb)
     return
