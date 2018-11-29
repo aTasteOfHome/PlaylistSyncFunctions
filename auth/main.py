@@ -70,5 +70,5 @@ def main(*args):
         print(authorization_url)
         print(state)
         return flask.redirect(authorization_url)
-        # Google does the sign in stuff, now set up the response processing in the redirect uri (/auth/cb)
+        # TODO: Google does the sign in stuff, now set up the response processing in the redirect uri (/app/authCb)
     return
